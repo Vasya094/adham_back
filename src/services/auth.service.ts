@@ -3,7 +3,7 @@ import { sign } from 'jsonwebtoken';
 import { SECRET_KEY } from '@config';
 import { CreateUserDto } from '@dtos/users.dto';
 import { HttpException } from '@exceptions/HttpException';
-import { DataStoredInToken, TokenData } from '@interfaces/auth.interface';
+import { DataStoredInToken, SignupSuccessReturnData, TokenData } from '@interfaces/auth.interface';
 import { User } from '@interfaces/users.interface';
 import userModel from '@models/users.model';
 import { isEmpty } from '@utils/util';
@@ -11,16 +11,19 @@ import { isEmpty } from '@utils/util';
 class AuthService {
   public users = userModel;
 
-  public async signup(userData: CreateUserDto): Promise<User> {
+  public async signup(userData: CreateUserDto): Promise<SignupSuccessReturnData> {
     if (isEmpty(userData)) throw new HttpException(400, 'userdata_is_empty');
 
     const findUser: User = await this.users.findOne({ email: userData.email });
-    if (findUser) throw new HttpException(409, `This email ${userData.email} already exists`);
+    if (findUser) throw new HttpException(409, 'this_email_already_exists');
 
     const hashedPassword = await hash(userData.password, 10);
-    const createUserData: User = await this.users.create({ ...userData, password: hashedPassword });
+    const createUserData: User = await new this.users({ ...userData, password: hashedPassword }).save();
+    const newPerson: User = await this.users.findById(createUserData._id).lean();
+    const tokenData = this.createToken(newPerson);
+    const cookie = this.createCookie(tokenData);
 
-    return createUserData;
+    return { cookie, user: { ...newPerson, password: undefined } };
   }
 
   public async login(userData: CreateUserDto): Promise<{ cookie: string; findUser: User }> {
@@ -56,7 +59,7 @@ class AuthService {
   }
 
   public createCookie(tokenData: TokenData): string {
-    return `Authorization=${tokenData.token}; HttpOnly; Max-Age=${tokenData.expiresIn};`;
+    return tokenData.token;
   }
 }
 

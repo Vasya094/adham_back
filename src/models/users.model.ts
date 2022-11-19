@@ -9,10 +9,15 @@ const userSchema: Schema = new Schema(
       match: [/.+\@.+\..+/, 'please_fill_a_valid_email_address'],
       required: 'email_is_required',
     },
-    name: {
+    firstName: {
       type: String,
       trim: true,
       required: 'name_is_required',
+    },
+    lastName: {
+      type: String,
+      trim: true,
+      required: 'last_name_is_required',
     },
     password: { type: String, required: 'password_is_required' },
   } as SchemaTypeOptions<User>,

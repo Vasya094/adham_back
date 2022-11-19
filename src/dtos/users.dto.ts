@@ -1,4 +1,4 @@
-import { IsEmail, IsString } from 'class-validator';
+import { IsEmail, IsString, ValidationArguments } from 'class-validator';
 
 export class CreateUserDto {
   @IsEmail()
@@ -7,6 +7,9 @@ export class CreateUserDto {
   @IsString()
   public password: string;
 
-  @IsString()
-  public name: string;
+  @IsString({ message: (args: ValidationArguments) => `${args.targetName} must be a string` })
+  public firstName: string;
+
+  @IsString({ message: (args: ValidationArguments) => `${args.targetName} must be a string` })
+  public lastName: string;
 }
