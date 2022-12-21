@@ -4,6 +4,7 @@ import { HttpException } from '@exceptions/HttpException';
 import { User } from '@interfaces/users.interface';
 import userModel from '@models/users.model';
 import { isEmpty } from '@utils/util';
+import { CreateLessonDto } from '@/dtos/lessons.dto';
 
 class UserService {
   public users = userModel;
@@ -27,8 +28,6 @@ class UserService {
   public async createUser(userData: CreateUserDto): Promise<User> {
     if (isEmpty(userData)) throw new HttpException(400, 'userdata_is_empty');
 
-    const findUser: User = await this.users.findOne({ email: userData.email });
-    if (findUser) throw new HttpException(409, 'this_email_already_exists');
     try {
       const hashedPassword = await hash(userData.password, 10);
       const createUserData: User = await this.users.create({ ...userData, password: hashedPassword });

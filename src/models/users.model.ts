@@ -19,7 +19,13 @@ const userSchema: Schema = new Schema(
       trim: true,
       required: 'last_name_is_required',
     },
-    password: { type: String, required: 'password_is_required' },
+    roles: [
+      {
+        type: String,
+        default: 'user',
+      },
+    ],
+    password: { type: String, required: 'password_is_required', select: false },
   } as SchemaTypeOptions<User>,
   {
     timestamps: true,
