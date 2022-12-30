@@ -26,6 +26,11 @@ const userSchema: Schema = new Schema(
       },
     ],
     password: { type: String, required: 'password_is_required', select: false },
+    zoomLink: String,
+    birthDate: Date,
+    gender: { type: String, default: 'male' },
+    livingCountry: { type: String, default: 'EGY' },
+    phoneNumber: { type: String, required: 'phonenumber_is_required' },
   } as SchemaTypeOptions<User>,
   {
     timestamps: true,

@@ -8,10 +8,7 @@ export class CreateLessonDto {
   public student: string;
 
   @IsString()
-  public date: string;
-
-  @IsString()
-  public time: string;
+  public dateTime: string;
 
   @IsBoolean()
   public paid: string;

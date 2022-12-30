@@ -9,8 +9,13 @@ import { CreateLessonDto } from '@/dtos/lessons.dto';
 class UserService {
   public users = userModel;
 
-  public async findAllUser(): Promise<User[]> {
-    const users: User[] = await this.users.find();
+  public async findAllUser(page: number, role: string): Promise<User[]> {
+    const query: { roles?: string } = {};
+    if (role) query.roles = role;
+    const users: User[] = await this.users
+      .find(query)
+      .limit(20)
+      .skip(20 * (page - 1));
     return users;
   }
 
@@ -63,6 +68,17 @@ class UserService {
     if (!deleteUserById) throw new HttpException(409, 'user_doesnt_exist');
 
     return deleteUserById;
+  }
+
+  public async findShortInfoList(name: string, role: string): Promise<Array<User>> {
+    const query = {
+      $or: [{ firstName: { $regex: name } }, { lastName: { $regex: name } }],
+      roles: { $in: [role] },
+    };
+
+    const filteredUsers: Array<User> = await this.users.find(query).select('firstName lastName');
+
+    return filteredUsers;
   }
 }
 

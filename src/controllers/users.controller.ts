@@ -8,7 +8,8 @@ class UsersController {
 
   public getUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const findAllUsersData: User[] = await this.userService.findAllUser();
+      const { page, role } = req.query;
+      const findAllUsersData: User[] = await this.userService.findAllUser(page, role);
 
       res.status(200).json({ data: findAllUsersData, message: 'findAll' });
     } catch (error) {
@@ -57,6 +58,18 @@ class UsersController {
       const deleteUserData: User = await this.userService.deleteUser(userId);
 
       res.status(200).json({ data: deleteUserData, message: 'deleted' });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public getShortInfoList = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { name, role } = req.query as { name: string; role: string };
+
+      const deleteUserData: Array<User> = await this.userService.findShortInfoList(name, role);
+
+      res.status(200).json({ data: deleteUserData, message: 'founded' });
     } catch (error) {
       next(error);
     }

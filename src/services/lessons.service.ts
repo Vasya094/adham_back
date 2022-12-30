@@ -9,8 +9,12 @@ import { CreateLessonDto } from '@/dtos/lessons.dto';
 class LessonService {
   public lessons = lessonModel;
 
-  public async findAllLessons(): Promise<Lesson[]> {
-    const lessons: Lesson[] = await this.lessons.find();
+  public async findAllLessons(page: number): Promise<Lesson[]> {
+    const lessons: Lesson[] = await this.lessons
+      .find()
+      .populate('teacher student', 'firstName lastName')
+      .limit(20)
+      .skip(20 * (page - 1));
     return lessons;
   }
 

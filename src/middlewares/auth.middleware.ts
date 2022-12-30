@@ -4,8 +4,9 @@ import { SECRET_KEY } from '@config';
 import { HttpException } from '@exceptions/HttpException';
 import { DataStoredInToken, RequestWithUser } from '@interfaces/auth.interface';
 import userModel from '@models/users.model';
+import { Roles } from '@/interfaces/users.interface';
 
-export function hasRole(rolesRequired: Array<string>) {
+export function hasRole(rolesRequired: Roles) {
   return (req: RequestWithUser, res: Response, next: NextFunction) => {
     if (!req?.user.roles) return res.sendStatus(401);
     const result = rolesRequired.find(role => req.user.roles.includes(role));
@@ -34,6 +35,7 @@ const authMiddleware = async (req: RequestWithUser, res: Response, next: NextFun
       next(new HttpException(404, 'authentication_token_missing'));
     }
   } catch (error) {
+    // name 'TokenExpiredError'
     next(new HttpException(401, 'wrong_authentication_token'));
   }
 };

@@ -13,17 +13,9 @@ const lessonSchema = new Schema(
       required: true,
       ref: 'User',
     },
-    date: {
+    dateTime: {
       type: String,
       required: [true, 'date_required'],
-    },
-    time: {
-      type: String,
-      required: [true, 'time_required'],
-    },
-    paid: {
-      type: Boolean,
-      default: false,
     },
   } as SchemaTypeOptions<Lesson>,
   {

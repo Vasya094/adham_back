@@ -4,5 +4,4 @@ export interface Lesson {
   student: string;
   date: string;
   time: string;
-  paid?: boolean;
 }
